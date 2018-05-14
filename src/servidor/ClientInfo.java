@@ -3,7 +3,7 @@ package servidor;
 import java.net.Socket;
 
 public class ClientInfo {
-	int myCpu, myMemory, MyBlock;
+	int myCpu, myMemory, myBlock;
 	private Socket socket;
 	
 	
