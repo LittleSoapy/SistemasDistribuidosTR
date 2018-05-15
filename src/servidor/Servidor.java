@@ -33,6 +33,7 @@ public class Servidor implements Runnable {
 		this.myCpu = cpu;
 		this.myMemory = memory;
 		this.myBlock = block;
+		mandarChatMessage(cpu + "|" + memory + "|" + block + ">");
 	}
 	
 
@@ -48,19 +49,19 @@ public class Servidor implements Runnable {
 			while (true) {
 				ClientInfo clientinfo = new ClientInfo(servidor.accept());
 
-				if (!Clientes.containsKey(clientinfo.getSocket().getInetAddress().getHostAddress())) {
+				if (!Clientes.containsKey(clientinfo.getAddress())) {
 					
 					System.out.println(
-							"Nova conexão com o cliente " + clientinfo.getSocket().getInetAddress().getHostAddress());
+							"Nova conexï¿½o com o cliente " + clientinfo.getAddress());
 
-					Clientes.put(clientinfo.getSocket().getInetAddress().getHostAddress(), clientinfo);
+					Clientes.put(clientinfo.getAddress(), clientinfo);
 
 					// possivel modificar?
 					TrataCliente tc = new TrataCliente(clientinfo, this);
 					new Thread(tc).start();
 					//
 					String msg = myCpu + "|" + myMemory + "|" + myBlock + ">";
-					sendMessageToClient(msg, clientinfo.getSocket());
+					sendMessageToClient(msg, clientinfo);
 				}
 			}
 		} catch (IOException e) {
@@ -89,17 +90,17 @@ public class Servidor implements Runnable {
 			ClientInfo clientinfo = new ClientInfo(new Socket());
 			clientinfo.getSocket().connect(new InetSocketAddress(ip, porta), 10);
 
-			Clientes.put(clientinfo.getSocket().getInetAddress().getHostAddress(), clientinfo);
+			Clientes.put(clientinfo.getAddress(), clientinfo);
 			sendConnectMessage(clientinfo.getSocket());
 
 			TrataCliente tc = new TrataCliente(clientinfo, this);
 			new Thread(tc).start();
 
 			String msg = myCpu + "|" + myMemory + "|" + myBlock + ">";
-			sendMessageToClient(msg, clientinfo.getSocket());
+			sendMessageToClient(msg, clientinfo);
 
 			System.out
-					.println("Nova conexão com o cliente " + clientinfo.getSocket().getInetAddress().getHostAddress());
+					.println("Nova conexï¿½o com o cliente " + clientinfo.getAddress());
 		} catch (UnknownHostException e) {
 			System.err.println("Nao foi possivel conectar ao outro servidor");
 			e.printStackTrace();
@@ -111,11 +112,10 @@ public class Servidor implements Runnable {
 		}
 	}
 
-	private void sendMessageToClient(String msg, Socket client) {
+	private void sendMessageToClient(String msg, ClientInfo client) {
 		try {
-			new PrintStream(client.getOutputStream()).println(msg);
+			new PrintStream(client.getSocket().getOutputStream()).println(msg);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -130,15 +130,13 @@ public class Servidor implements Runnable {
 	}
 
 	public void mandarMensagemDirecionada(String msg, String ip) {
-		sendMessageToClient(msg, Clientes.get(ip).getSocket());
+		sendMessageToClient(msg, Clientes.get(ip));
 	}
 	
 	public void mandarChatMessage(String msg) {
 		// Message message = Message.ChatMessage(msg);
 		for (Entry<String, ClientInfo> entry : Clientes.entrySet()) {
-			// String key = entry.getKey();
-			Socket value = entry.getValue().getSocket();
-			sendMessageToClient(msg, value);
+			sendMessageToClient(msg, entry.getValue());
 		}
 
 	}

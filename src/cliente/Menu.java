@@ -144,7 +144,6 @@ public class Menu {
 			return;
 		}
 		servidor.mudar(cpu, memory, block);
-		mandarMensagemGlobal(cpu + "|" + memory + "|" + block + ">");
 	}
 	
 	public void desconectar(String[] args, Scanner teclado) {
@@ -165,7 +164,6 @@ public class Menu {
 			System.err.println("Numero incompativel de argumentos");
 			return;
 		}
-		
 	}
 
 	public void mandarMensagemGlobal(String msg) {

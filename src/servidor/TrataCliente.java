@@ -1,6 +1,7 @@
 package servidor;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class TrataCliente implements Runnable {
@@ -28,10 +29,10 @@ public class TrataCliente implements Runnable {
 
 			if (msg.charAt(msg.length() - 1) == '>') {
 				try {
-					String[] info = msg.split("[| >]");
-					clientinfo.myCpu = Integer.parseInt(info[0]);
-					clientinfo.myMemory = Integer.parseInt(info[1]);
-					clientinfo.myBlock = Integer.parseInt(info[2]);
+					int[] info = Arrays.stream(msg.split("[| >]")).mapToInt(Integer::parseInt).toArray();
+					clientinfo.myCpu = info[0];
+					clientinfo.myMemory = info[1];
+					clientinfo.myBlock = info[2];					
 				} catch (Exception e) {
 					System.err.println("Erro em gravar dados do cliente");
 					System.err.println(e);
@@ -42,7 +43,7 @@ public class TrataCliente implements Runnable {
 				try {
 					String[] info = msg.split("[| +]");
 					int result = servidor.soma(Integer.parseInt(info[0]), Integer.parseInt(info[1]));
-					servidor.mandarMensagemDirecionada(Integer.toString(result), clientinfo.getSocket().getInetAddress().getHostAddress());
+					servidor.mandarMensagemDirecionada(Integer.toString(result), clientinfo.getAddress());
 				} catch (Exception e) {
 					System.err.println("Erro na requisicao do servico de soma");
 				}
@@ -50,16 +51,16 @@ public class TrataCliente implements Runnable {
 			
 			if (msg.equals("disconnect!")) {
 				try {
-					servidor.mandarMensagemDirecionada("disconnect!", clientinfo.getSocket().getInetAddress().getHostAddress());
+					servidor.mandarMensagemDirecionada("disconnect!", clientinfo.getAddress());
 					break;
 				} catch (Exception e) {
 					System.err.println("Erro na requisicao do servico de soma");
 				}
 			}
 
-			servidor.receberMesagem(clientinfo.getSocket().getInetAddress().getHostAddress() + " - " + msg);
+			servidor.receberMesagem(clientinfo.getAddress() + " - " + msg);
 		}
-		servidor.disconnectClient(clientinfo.getSocket().getInetAddress().getHostAddress());
+		servidor.disconnectClient(clientinfo.getAddress());
 		s.close();
 	}
 

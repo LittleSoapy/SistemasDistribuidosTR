@@ -15,6 +15,8 @@ public class ClientInfo {
 		return socket;
 	}
 	
-	
+	public String getAddress() {
+		return socket.getInetAddress().getHostAddress();
+	}
 	
 }
