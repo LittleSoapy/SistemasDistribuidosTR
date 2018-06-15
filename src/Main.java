@@ -11,8 +11,7 @@ public class Main {
 			origem = Boolean.parseBoolean(args[1]);
 		} else {
 			Scanner s = new Scanner(System.in);
-			origem = s.nextBoolean();	
-			s.close();
+			origem = s.nextBoolean();
 		}
 		if (origem) {
 			Origem servidor = new Origem(7077);

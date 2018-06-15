@@ -96,9 +96,9 @@ public class Menu {
 		}
 		System.out.println("Escolha um índice para mandar a operação:");
 		listarClientes();
-		var index = teclado.nextLine();
+		String index = teclado.nextLine();
 		System.out.println("Enviando");
-		var msg = op_code + "|" + num1 + "|" + num2;
+		String msg = op_code + "|" + num1 + "|" + num2;
 		origem.sendMessage(msg, index);;
 	}
 
@@ -138,7 +138,7 @@ public class Menu {
 	}
 
 	public void listarClientes() {
-		var connected = origem.getConnected();
+		String [] connected = origem.getConnected();
 		for (int i = 0; i < connected.length; i++) {
 			System.out.println(i + " - " + connected[i]);			
 		}

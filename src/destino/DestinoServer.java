@@ -31,9 +31,9 @@ public class DestinoServer implements Runnable, MessageReceiver {
 			while (this.running) {
 				if(origem == null) {
 					System.out.println("Esperando conexão...");
-					var socket = servidor.accept();
+					Socket socket = servidor.accept();
 					System.out.println("Nova conexão com " + socket.getInetAddress());
-					var handler = new ConnectionHandler(socket, this);
+					ConnectionHandler handler = new ConnectionHandler(socket, this);
 					new Thread(handler).start();
 					origem = socket;					
 				}
